@@ -1,6 +1,6 @@
 # Build & Push To Private ERC
 
-Build and push a Docker image to a private ECR repository in one action.
+Build and push a Docker image to a private ECR repository in one action. This action can only be used on **private** Github repositories. For public repositories, please use [this action.](https://github.com/citizensadvice/build-and-push-action)
 
 By default it will push the image with three different tags:
 
