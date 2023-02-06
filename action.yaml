@@ -45,7 +45,7 @@ runs:
         with:
           aws-access-key-id: ${{ inputs.aws_access_key }}
           aws-secret-access-key: ${{ inputs.aws_secret_key }}
-          aws-region: us-east-1
+          aws-region: eu-west-1
 
       - name: ECR login
         id: ecr-login
