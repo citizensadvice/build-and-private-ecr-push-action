@@ -28,7 +28,7 @@ The user associated with the `aws_access_key` must have permission to push, upda
 |---|---|
 | `image_id` | The ID of the built image |
 | `image_digest` | The digest of the built image |
-| `image_tags` | A CSV list of the image labels and tags |
+| `image_tags` | A CSV list of the image tags, in the order `commit sha`,`branch/tag`,`latest` |
 
 ## Example usage
 

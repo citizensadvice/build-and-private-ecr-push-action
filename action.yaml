@@ -26,8 +26,8 @@ outputs:
     description: 'Digest of the image'
     value: ${{ steps.build_and_push.digest }}
   image_tags:
-    description: 'A CSV list of the image labels and tags'
-    value: ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.ref_name }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest
+    description: 'A CSV list of the image tags'
+    value: ${{ github.sha }},${{ github.ref_name }},latest
 
 runs:
   using: "composite"
