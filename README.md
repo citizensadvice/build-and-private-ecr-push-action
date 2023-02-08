@@ -5,7 +5,7 @@ Build and push a Docker image to a private ECR repository in one action. This ac
 By default it will push the image with three different tags:
 
 - **Commit sha** as documented [here](https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt---shortlength). e.g. `99da3338`
-- **Branch or Tag name**, e.g. `main`, `v1.0.0`
+- **Branch** or **Tag** on push events or **PR Source Branch** for pull request events, e.g. `main`, `v1.0.0`, `feature`
 - **latest**
 
 Please note that the ECR repository must be created beforehand. Repository creation is not currently within the scope of this Action.

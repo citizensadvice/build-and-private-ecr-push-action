@@ -27,7 +27,7 @@ outputs:
     value: ${{ steps.build_and_push.digest }}
   image_tags:
     description: 'A CSV list of the image tags'
-    value: ${{ github.sha }},${{ github.ref_name }},latest
+    value: ${{ github.sha }},${{ github.head_ref || github.ref_name }},latest
 
 runs:
   using: "composite"
@@ -76,5 +76,5 @@ runs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.sha }}
-            ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.ref_name }}
+            ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.head_ref || github.ref_name }}
             ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest
