@@ -17,6 +17,10 @@ inputs:
   auth_token:
     description: 'A token to pull the repository. Usually GITHUB_TOKEN'
     required: true
+  multiarch_build:
+    description: 'Build a `linux/arm64' image as well as `linux/amd64`. Defaults to true'
+    required: false
+    default: true
 
 outputs:
   image_id:
@@ -32,13 +36,23 @@ outputs:
 runs:
   using: "composite"
   steps:
+      - name: Configure Multi-arch Build
+        id: multiarch
+        shell: bash
+        run: |
+          if [[ "${{ inputs.multiarch_build }}" == "false" ]] ; then
+            echo "multiarch=linux/amd64,linux/arm64" >> $GITHUB_OUTPUTS
+          else
+            echo "multiarch=linux/amd64" >> $GITHUB_OUTPUTS
+          fi
+
       - uses: actions/checkout@v3
         with:
           token: ${{ inputs.auth_token }}
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2.4.0
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ steps.multiarch.outputs.multiarch }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -73,7 +87,7 @@ runs:
           # Future work: enable cache, see https://github.com/moby/buildkit#github-actions-cache-experimental
           # cache-from: type=gha,token=${{ inputs.auth_token }}
           # cache-to: type=gha,token=${{ inputs.auth_token }},mode=max
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ steps.multiarch.outputs.multiarch }}
           tags: |
             ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.sha }}
             ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.head_ref || github.ref_name }}

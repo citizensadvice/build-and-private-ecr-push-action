@@ -19,6 +19,7 @@ Please note that the ECR repository must be created beforehand. Repository creat
 | `dockerfile_context` | The path to the Dockerfile context. Will default to the root of the project | No | `.`
 | `repository_name` | The name of the image repository. Is used to name the docker image. Must may contain lowercase and uppercase letters, digits, underscores, periods and dashes only. | Yes | |
 | `auth_token` | A token with permission to clone the repository. Will usually be GITHUB_TOKEN | Yes | |
+| `multiarch_build` | Allow for multi-arch builds, when `false` only builds `linux/amd64` images, when `true` also builds `linux/arm64` images | No | `true` |
 
 The user associated with the `aws_access_key` must have permission to push, update and read the private repository in question.
 
