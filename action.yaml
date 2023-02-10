@@ -20,7 +20,7 @@ inputs:
   multiarch_build:
     description: 'Build a `linux/arm64` image as well as `linux/amd64`. Defaults to enabled'
     required: false
-    default: 'enabled'
+    default: 'disabled'
 
 outputs:
   image_id:

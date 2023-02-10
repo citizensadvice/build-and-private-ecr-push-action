@@ -23,6 +23,8 @@ Please note that the ECR repository must be created beforehand. Repository creat
 
 The user associated with the `aws_access_key` must have permission to push, update and read the private repository in question.
 
+Due to the fact that the action will be running in an `amd64` environment (Also known as `x86_64`), building the image with multi-arch enabled will cause the build times to increase **significantly**, so use only when required.
+
 ## Outputs
 
 | Name | Description |
