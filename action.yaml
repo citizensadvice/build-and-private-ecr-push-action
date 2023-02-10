@@ -41,9 +41,9 @@ runs:
         shell: bash
         run: |
           if [[ "${{ inputs.multiarch_build }}" == "false" ]] ; then
-            echo "multiarch=linux/amd64,linux/arm64" >> $GITHUB_OUTPUTS
+            echo "multiarch=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
           else
-            echo "multiarch=linux/amd64" >> $GITHUB_OUTPUTS
+            echo "multiarch=linux/amd64" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v3
