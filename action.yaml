@@ -73,7 +73,7 @@ runs:
       - name: Check if image already exists
         shell: bash
         run: |
-          if [[ $(aws ecr describe-images --region us-east-1 --repository-name ${{ inputs.repository_name }} --image-ids=imageTag=${{ github.sha }}) ]]
+          if [[ $(aws ecr describe-images --region eu-west-1 --repository-name ${{ inputs.repository_name }} --image-ids=imageTag=${{ github.sha }}) ]]
           then
             echo "IMAGE_EXISTS=true" >> $GITHUB_ENV
           else
