@@ -18,9 +18,9 @@ inputs:
     description: 'A token to pull the repository. Usually GITHUB_TOKEN'
     required: true
   multiarch_build:
-    description: 'Build a `linux/arm64` image as well as `linux/amd64`. Defaults to true'
+    description: 'Build a `linux/arm64` image as well as `linux/amd64`. Defaults to enabled'
     required: false
-    default: 'true'
+    default: 'enabled'
 
 outputs:
   image_id:
@@ -40,10 +40,13 @@ runs:
         id: multiarch
         shell: bash
         run: |
-          if [[ "${{ inputs.multiarch_build }}" == "false" ]] ; then
+          if [[ "${{ inputs.multiarch_build }}" == "enabled" ]] ; then
             echo "multiarch=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
-          else
+          elif [[ "${{ inputs.multiarch_build }}" == "disabled" ]] ; then
             echo "multiarch=linux/amd64" >> $GITHUB_OUTPUT
+          else
+            echo "Input `multiarch_build` not set correctly. Options are 'enabled' or 'disabled'"
+            exit 1
           fi
 
       - uses: actions/checkout@v3
