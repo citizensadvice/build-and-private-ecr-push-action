@@ -18,9 +18,9 @@ inputs:
     description: 'A token to pull the repository. Usually GITHUB_TOKEN'
     required: true
   multiarch_build:
-    description: 'Build a `linux/arm64' image as well as `linux/amd64`. Defaults to true'
+    description: 'Build a `linux/arm64` image as well as `linux/amd64`. Defaults to true'
     required: false
-    default: true
+    default: 'true'
 
 outputs:
   image_id:
