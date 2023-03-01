@@ -12,14 +12,13 @@ Please note that the ECR repository must be created beforehand. Repository creat
 
 ## Inputs
 
-| Input | Description | Required | Default |
-|---|---|---|---|
-| `aws_access_key` | Access key for a user with permission to create and update images in the private ECR repository | Yes | |
-| `aws_secret_key` | Secret key for the access key | Yes | |
-| `dockerfile_context` | The path to the Dockerfile context. Will default to the root of the project | No | `.`
-| `repository_name` | The name of the image repository. Is used to name the docker image. Must may contain lowercase and uppercase letters, digits, underscores, periods and dashes only. | Yes | |
-| `auth_token` | A token with permission to clone the repository. Will usually be GITHUB_TOKEN | Yes | |
-| `multiarch_build` | Allow for multi-arch builds. When `'disabled'` only builds `linux/amd64` images, when `'enabled'` also builds `linux/arm64` images | No | `'enabled'` |
+| Input                | Description                                                                                                                                                         | Required | Default                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------- |
+| `role_arn`           | A role to assume with permission to push to the Private ECR repository                                                                                              | No       | 'arn:aws:iam::979633842206:role/PrivateECRPush' |
+| `dockerfile_context` | The path to the Dockerfile context. Will default to the root of the project                                                                                         | No       | `.`                                             |
+| `repository_name`    | The name of the image repository. Is used to name the docker image. Must may contain lowercase and uppercase letters, digits, underscores, periods and dashes only. | Yes      |                                                 |
+| `auth_token`         | A token with permission to clone the repository. Will usually be GITHUB_TOKEN                                                                                       | Yes      |                                                 |
+| `multiarch_build`    | Allow for multi-arch builds. When `'disabled'` only builds `linux/amd64` images, when `'enabled'` also builds `linux/arm64` images                                  | No       | `'enabled'`                                     |
 
 The user associated with the `aws_access_key` must have permission to push, update and read the private repository in question.
 
@@ -27,11 +26,11 @@ Due to the fact that the action will be running in an `amd64` environment (Also 
 
 ## Outputs
 
-| Name | Description |
-|---|---|
-| `image_id` | The ID of the built image |
-| `image_digest` | The digest of the built image |
-| `image_tags` | A CSV list of the image tags, in the order `commit sha`,`branch/tag`,`latest` |
+| Name           | Description                                                                   |
+| -------------- | ----------------------------------------------------------------------------- |
+| `image_id`     | The ID of the built image                                                     |
+| `image_digest` | The digest of the built image                                                 |
+| `image_tags`   | A CSV list of the image tags, in the order `commit sha`,`branch/tag`,`latest` |
 
 ## Example usage
 

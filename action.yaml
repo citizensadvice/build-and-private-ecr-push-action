@@ -1,13 +1,11 @@
 name: 'Build and push to a private ECR'
 description: 'Build and push a Docker image to a private ERC, written for CA repositories.'
 inputs:
-  aws_access_key:
-    description: 'AWS access key ID'
-    required: true
-  aws_secret_key:
-    description: 'AWS secret access key'
-    required: true
-  dockerfile_context: 
+  role_arn:
+    description: 'A role to assume with permission to push to the Private ECR repository'
+    required: false
+    default: 'arn:aws:iam::979633842206:role/PrivateECRPush'
+  dockerfile_context:
     description: 'The context of the Dockerfile. Defaults to root of project.'
     required: false
     default: '.'
@@ -34,64 +32,64 @@ outputs:
     value: ${{ github.sha }},${{ github.head_ref || github.ref_name }},latest
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
-      - name: Configure Multi-arch Build
-        id: multiarch
-        shell: bash
-        run: |
-          if [[ "${{ inputs.multiarch_build }}" == "enabled" ]] ; then
-            echo "multiarch=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
-          elif [[ "${{ inputs.multiarch_build }}" == "disabled" ]] ; then
-            echo "multiarch=linux/amd64" >> $GITHUB_OUTPUT
-          else
-            echo "Input `multiarch_build` not set correctly. Options are 'enabled' or 'disabled'"
-            exit 1
-          fi
+    - name: Configure Multi-arch Build
+      id: multiarch
+      shell: bash
+      run: |
+        if [[ "${{ inputs.multiarch_build }}" == "enabled" ]] ; then
+          echo "multiarch=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
+        elif [[ "${{ inputs.multiarch_build }}" == "disabled" ]] ; then
+          echo "multiarch=linux/amd64" >> $GITHUB_OUTPUT
+        else
+          echo "Input `multiarch_build` not set correctly. Options are 'enabled' or 'disabled'"
+          exit 1
+        fi
 
-      - uses: actions/checkout@v3
-        with:
-          token: ${{ inputs.auth_token }}
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2.4.0
-        with:
-          platforms: ${{ steps.multiarch.outputs.multiarch }}
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ inputs.auth_token }}
+    - uses: docker/setup-qemu-action@v2
+    - uses: docker/setup-buildx-action@v2.4.0
+      with:
+        platforms: ${{ steps.multiarch.outputs.multiarch }}
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          aws-access-key-id: ${{ inputs.aws_access_key }}
-          aws-secret-access-key: ${{ inputs.aws_secret_key }}
-          aws-region: eu-west-1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1-node16
+      with:
+        role-to-assume: ${{ inputs.role_arn }}
+        role-session-name: ${{ inputs.repository_name }}-actions-workflow
+        aws-region: eu-west-1
 
-      - name: ECR login
-        id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry-type: private
+    - name: ECR login
+      id: ecr-login
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry-type: private
 
-      - name: Check if image already exists
-        shell: bash
-        run: |
-          if [[ $(aws ecr describe-images --region eu-west-1 --repository-name ${{ inputs.repository_name }} --image-ids=imageTag=${{ github.sha }}) ]]
-          then
-            echo "IMAGE_EXISTS=true" >> $GITHUB_ENV
-          else
-            echo "IMAGE_EXISTS=false" >> $GITHUB_ENV
-          fi
+    - name: Check if image already exists
+      shell: bash
+      run: |
+        if [[ $(aws ecr describe-images --region eu-west-1 --repository-name ${{ inputs.repository_name }} --image-ids=imageTag=${{ github.sha }}) ]]
+        then
+          echo "IMAGE_EXISTS=true" >> $GITHUB_ENV
+        else
+          echo "IMAGE_EXISTS=false" >> $GITHUB_ENV
+        fi
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        if: env.IMAGE_EXISTS == 'false'
-        id: build_and_push
-        with:
-          context: .
-          push: true
-          # Future work: enable cache, see https://github.com/moby/buildkit#github-actions-cache-experimental
-          # cache-from: type=gha,token=${{ inputs.auth_token }}
-          # cache-to: type=gha,token=${{ inputs.auth_token }},mode=max
-          platforms: ${{ steps.multiarch.outputs.multiarch }}
-          tags: |
-            ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.sha }}
-            ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.head_ref || github.ref_name }}
-            ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v3
+      if: env.IMAGE_EXISTS == 'false'
+      id: build_and_push
+      with:
+        context: .
+        push: true
+        # Future work: enable cache, see https://github.com/moby/buildkit#github-actions-cache-experimental
+        # cache-from: type=gha,token=${{ inputs.auth_token }}
+        # cache-to: type=gha,token=${{ inputs.auth_token }},mode=max
+        platforms: ${{ steps.multiarch.outputs.multiarch }}
+        tags: |
+          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.sha }}
+          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.head_ref || github.ref_name }}
+          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest
