@@ -10,6 +10,10 @@ By default it will push the image with three different tags:
 
 Please note that the ECR repository must be created beforehand. Repository creation is not currently within the scope of this Action.
 
+## Authentication
+
+In order to give a repository the AWS permissions required to run this action, the Github repository name and the ECR repository ARN **must** be added to the `PrivateECRPush` configuration in the [AWS OIDC CDK](https://github.com/citizensadvice/aws-oidc-cdk) repository and then deployed. Please send a message to `#devops-support` in Slack for help with this.
+
 ## Inputs
 
 | Input                | Description                                                                                                                                                         | Required | Default                                         |
@@ -55,8 +59,6 @@ jobs:
       - name: Build and push to ECR
         uses: citizensadvice/build-and-push-private-action@v1
         with:
-            aws_access_key: ${{ secrets.PUBLIC_PUSH_ECR_AWS_KEY }}
-            aws_secret_key: ${{ secrets.PUBLIC_PUSH_ECR_AWS_SECRET }}
             dockerfile_context: '.'
             repository_name: <REPOSITORY NAME HERE>
             auth_token: ${{ secrets.GITHUB_TOKEN }}
