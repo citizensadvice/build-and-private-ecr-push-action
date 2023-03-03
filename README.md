@@ -55,6 +55,9 @@ jobs:
   build:
     name: Publish image
     runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Build and push to ECR
         uses: citizensadvice/build-and-push-private-action@v1
