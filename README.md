@@ -10,6 +10,10 @@ By default it will push the image with three different tags:
 
 Please note that the ECR repository must be created beforehand. Repository creation is not currently within the scope of this Action.
 
+## Cache
+
+This action will automatically cache Docker image layers to the Github cache, however this feature is experimental.
+
 ## Authentication
 
 In order to give a repository the AWS permissions required to run this action, the Github repository name and the ECR repository ARN **must** be added to the `PrivateECRPush` configuration in the [AWS OIDC CDK](https://github.com/citizensadvice/aws-oidc-cdk) repository and then deployed. Please send a message to `#devops-support` in Slack for help with this.

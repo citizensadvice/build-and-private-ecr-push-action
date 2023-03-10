@@ -90,7 +90,7 @@ runs:
         context: .
         push: ${{ inputs.push_after_build }}
         load: true
-        # Future work: enable cache, see https://github.com/moby/buildkit#github-actions-cache-experimental
+        # Cache is experimental, see https://github.com/moby/buildkit#github-actions-cache-experimental
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: ${{ steps.multiarch.outputs.multiarch }}
