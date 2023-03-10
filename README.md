@@ -23,6 +23,7 @@ In order to give a repository the AWS permissions required to run this action, t
 | `repository_name`    | The name of the image repository. Is used to name the docker image. Must may contain lowercase and uppercase letters, digits, underscores, periods and dashes only. | Yes      |                                                 |
 | `auth_token`         | A token with permission to clone the repository. Will usually be GITHUB_TOKEN                                                                                       | Yes      |                                                 |
 | `multiarch_build`    | Allow for multi-arch builds. When `'disabled'` only builds `linux/amd64` images, when `'enabled'` also builds `linux/arm64` images                                  | No       | `'enabled'`                                     |
+| 'push_after_build'   | Push the image after building it. Useful if you need to run tests on the image before you push it                                                                   | No       | `true`                                          |
 
 The user associated with the `aws_access_key` must have permission to push, update and read the private repository in question.
 

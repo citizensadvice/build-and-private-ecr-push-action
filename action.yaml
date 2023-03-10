@@ -19,6 +19,10 @@ inputs:
     description: 'Build a `linux/arm64` image as well as `linux/amd64`. Defaults to enabled'
     required: false
     default: 'disabled'
+  push_after_build:
+    description: 'Push the image after building it. Useful if you need to run tests on the image before you push it. Defaults to `true`'
+    required: false
+    default: true
 
 outputs:
   image_id:
@@ -84,7 +88,8 @@ runs:
       id: build_and_push
       with:
         context: .
-        push: true
+        push: ${{ inputs.push_after_build }}
+        load: true
         # Future work: enable cache, see https://github.com/moby/buildkit#github-actions-cache-experimental
         # cache-from: type=gha,token=${{ inputs.auth_token }}
         # cache-to: type=gha,token=${{ inputs.auth_token }},mode=max
