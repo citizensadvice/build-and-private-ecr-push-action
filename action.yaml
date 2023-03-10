@@ -91,8 +91,8 @@ runs:
         push: ${{ inputs.push_after_build }}
         load: true
         # Future work: enable cache, see https://github.com/moby/buildkit#github-actions-cache-experimental
-        cache-from: type=gha,token='${{ inputs.auth_token }}'
-        cache-to: type=gha,token='${{ inputs.auth_token }}',mode=max
+        cache-from: type=gha,token=${{ inputs.auth_token }}
+        cache-to: type=gha,token=${{ inputs.auth_token }},mode=max
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: |
           ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.sha }}
