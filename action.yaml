@@ -52,7 +52,7 @@ runs:
         fi
 
     - name: Get branch name
-      id: branch-name
+      id: ±
       shell: bash
       run: |
         branch=${{ github.head_ref || github.ref_name }}
@@ -96,7 +96,7 @@ runs:
       with:
         context: .
         push: ${{ inputs.push_after_build }}
-        load: true
+        load: false
         # Cache is experimental, see https://github.com/moby/buildkit#github-actions-cache-experimental
         cache-from: type=gha
         cache-to: type=gha,mode=max
