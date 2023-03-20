@@ -33,7 +33,7 @@ outputs:
     value: ${{ steps.build_and_push.digest }}
   image_tags:
     description: 'A CSV list of the image tags'
-    value: ${{ github.sha }},${{ github.head_ref || github.ref_name }},latest
+    value: ${{ github.sha }},${{ steps.branch-name.outputs.name }},latest
 
 runs:
   using: 'composite'
@@ -50,6 +50,13 @@ runs:
           echo "Input `multiarch_build` not set correctly. Options are 'enabled' or 'disabled'"
           exit 1
         fi
+
+    - name: Get branch name
+      id: branch-name
+      shell: bash
+      run: |
+        branch=${{ github.head_ref || github.ref_name }}
+        echo "name=${branch//\//-}" >> $GITHUB_OUTPUT
 
     - uses: actions/checkout@v3
       with:
@@ -96,5 +103,5 @@ runs:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: |
           ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.sha }}
-          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ github.head_ref || github.ref_name }}
+          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }}
           ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest
