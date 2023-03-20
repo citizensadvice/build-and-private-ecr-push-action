@@ -52,7 +52,7 @@ runs:
         fi
 
     - name: Get branch name
-      id: ±
+      id: branch-name
       shell: bash
       run: |
         branch=${{ github.head_ref || github.ref_name }}
