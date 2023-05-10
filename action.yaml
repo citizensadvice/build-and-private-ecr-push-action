@@ -9,6 +9,10 @@ inputs:
     description: 'The context of the Dockerfile. Defaults to root of project.'
     required: false
     default: '.'
+  dockerfile:
+    description: 'The name of the dockerfile to build. Defaults to Dockerfile'
+    required: false
+    default: 'Dockerfile'
   repository_name:
     description: 'The name of the ECR repository. Will be used as the name of the Docker image'
     required: true
@@ -95,6 +99,7 @@ runs:
       id: build_and_push
       with:
         context: .
+        file: ${{ inputs.dockerfile }}
         push: ${{ inputs.push_after_build }}
         load: false
         # Cache is experimental, see https://github.com/moby/buildkit#github-actions-cache-experimental
