@@ -27,14 +27,10 @@ inputs:
     description: 'Push the image after building it. Useful if you need to run tests on the image before you push it. Defaults to `true`'
     required: false
     default: true
-  tag_dev:
-    description: 'Tag the image as a development image'
+  prod_image:
+    description: 'Tag the image as a production image. Adds `latest tag` on push. Defaults to false'
     required: false
-    default: false
-  tag_latest:
-    description: 'Tag the image with latest'
-    required: false
-    default: 'true'
+    default: 'false'
 
 outputs:
   image_id:
@@ -87,9 +83,9 @@ runs:
       id: latest-tag
       shell: bash
       run: |
-        if [[ "${{ inputs.tag_latest }}" == "true" ]] ; then
-          echo "tag=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest" >> $GITHUB_OUTPUT
-        elif [[ "${{ inputs.tag_latest }}" == "false" ]] ; then
+        if [[ "${{ inputs.prod_image }}" == "true" ]] ; then
+          echo "latest=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest" >> $GITHUB_OUTPUT
+        elif [[ "${{ inputs.prod_image }}" == "false" ]] ; then
           echo "tag=" >> $GITHUB_OUTPUT
         else
           echo "Input `tag_latest` not set correctly. Options are 'true' or 'false'"
@@ -100,9 +96,9 @@ runs:
       id: dev-tag
       shell: bash
       run: |
-        if [[ "${{ inputs.tag_dev }}" == "true" ]] ; then
+        if [[ "${{ inputs.prod_image }}" == "false" ]] ; then
           echo "tag=dev_" >> $GITHUB_OUTPUT
-        elif [[ "${{ inputs.tag_dev }}" == "false" ]] ; then
+        elif [[ "${{ inputs.prod_image }}" == "true" ]] ; then
           echo "tag=" >> $GITHUB_OUTPUT
         else
           echo "Input `dev_tag` not set correctly. Options are 'true' or 'false'"
@@ -143,4 +139,4 @@ runs:
         tags: |
           ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }}
           ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }}
-          ${{ steps.tag_latest.outputs.tag }}
+          ${{ steps.latest_tag.outputs.tag }}

@@ -4,9 +4,15 @@ Build and push a Docker image to a private ECR repository in one action. This ac
 
 By default it will push the image with three different tags:
 
+- **Commit sha**, prepended with `dev_` e.g. `dev_e1b18d15d2b5558d275920ab5b5650a5c36bb1ee`
+- **Branch** or **Tag** on push events or **PR Source Branch** for pull request events, e.g. `main`, `v1.0.0`, `feature`
+
+When marked as a production image using `prod_image: true`
+
 - **Commit sha**, e.g. `e1b18d15d2b5558d275920ab5b5650a5c36bb1ee`
 - **Branch** or **Tag** on push events or **PR Source Branch** for pull request events, e.g. `main`, `v1.0.0`, `feature`
 - **latest**
+
 
 Please note that the ECR repository must be created beforehand. Repository creation is not currently within the scope of this Action.
 
@@ -29,6 +35,7 @@ In order to give a repository the AWS permissions required to run this action, t
 | `multiarch_build`    | Allow for multi-arch builds. When `'disabled'` only builds `linux/amd64` images, when `'enabled'` also builds `linux/arm64` images                                  | No       | `'enabled'`                                     |
 | `push_after_build`   | Push the image after building it. Useful if you need to run tests on the image before you push it                                                                   | No       | `true`                                          |
 | `dockerfile`         | The name of the dockerfile to be built.                                                                                                                             | No       | `Dockerfile`                                    |
+| `prod_image`         | Mark the image as a production image. Adds `latest` tag. When false, adds `dev_` to hash tag.                                                                       | No       | false                                           |
 
 The user associated with the `aws_access_key` must have permission to push, update and read the private repository in question.
 
@@ -71,6 +78,7 @@ jobs:
             dockerfile_context: '.'
             repository_name: <REPOSITORY NAME HERE>
             auth_token: ${{ secrets.GITHUB_TOKEN }}
+            prod_image: true
 ```
 
 The `on` conditions and branch matching can be changes to whatever suites your team best. If you require assistance implementing a custom solution, please send a message to `#devops-support` in Slack.
