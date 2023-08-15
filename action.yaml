@@ -143,5 +143,4 @@ runs:
         tags: |
           ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }}
           ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }}
-          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest
           ${{ steps.tag_latest.outputs.tag }}
