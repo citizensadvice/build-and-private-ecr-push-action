@@ -100,9 +100,9 @@ runs:
       id: dev-tag
       shell: bash
       run: |
-        if [[ "${{ inputs.dev_tag }}" == "true" ]] ; then
+        if [[ "${{ inputs.tag_dev }}" == "true" ]] ; then
           echo "tag=dev_" >> $GITHUB_OUTPUT
-        elif [[ "${{ inputs.dev_tag }}" == "false" ]] ; then
+        elif [[ "${{ inputs.tag_dev }}" == "false" ]] ; then
           echo "tag=" >> $GITHUB_OUTPUT
         else
           echo "Input `dev_tag` not set correctly. Options are 'true' or 'false'"
