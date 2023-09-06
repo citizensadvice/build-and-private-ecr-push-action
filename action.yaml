@@ -128,7 +128,7 @@ runs:
       if: env.IMAGE_EXISTS == 'false'
       id: build_and_push
       with:
-        context: .
+        context: ${{ inputs.dockerfile_context }}
         file: ${{ inputs.dockerfile }}
         push: ${{ inputs.push_after_build }}
         load: false
