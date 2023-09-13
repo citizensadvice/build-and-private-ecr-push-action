@@ -84,11 +84,11 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.prod_image }}" == "true" ]] ; then
-          echo "latest=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest" >> $GITHUB_OUTPUT
+          echo "tag=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest" >> $GITHUB_OUTPUT
         elif [[ "${{ inputs.prod_image }}" == "false" ]] ; then
           echo "tag=" >> $GITHUB_OUTPUT
         else
-          echo "Input `tag_latest` not set correctly. Options are 'true' or 'false'"
+          echo "Input `prod_image` not set correctly. Options are 'true' or 'false'"
           exit 1
         fi
 
