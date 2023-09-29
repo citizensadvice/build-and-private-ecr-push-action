@@ -34,7 +34,8 @@ In order to give a repository the AWS permissions required to run this action, t
 | `auth_token`         | A token with permission to clone the repository. Will usually be GITHUB_TOKEN                                                                                       | Yes      |                                                 |
 | `multiarch_build`    | Allow for multi-arch builds. When `'disabled'` only builds `linux/amd64` images, when `'enabled'` also builds `linux/arm64` images                                  | No       | `'enabled'`                                     |
 | `push_after_build`   | Push the image after building it. Useful if you need to run tests on the image before you push it                                                                   | No       | `true`                                          |
-| `dockerfile`         | The name of the dockerfile to be built.                                                                                                                             | No       | `Dockerfile`                                    |
+| `dockerfile`         | The name of the dockerfile to be built.         | No       | `Dockerfile`                                    |
+| `build-args`         | List of build-time variables.   | No       |                                    |
 | `prod_image`         | Mark the image as a production image. Adds `latest` tag. When false, adds `dev_` to hash tag.                                                                       | No       | false                                           |
 
 The user associated with the `aws_access_key` must have permission to push, update and read the private repository in question.
