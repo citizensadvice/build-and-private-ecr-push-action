@@ -1,4 +1,4 @@
-# Build & Push To Private ERC
+# Build and private ECR push action
 
 Build and push a Docker image to a private ECR repository in one action. This action can only be used on **private** Github repositories. For public repositories, please use [this action.](https://github.com/citizensadvice/build-and-push-action)
 
@@ -55,7 +55,7 @@ Due to the fact that the action will be running in an `amd64` environment (Also 
 Located in `.github/workflows/build-and-push.yml`:
 
 ```yaml
-name: Build & Push Image To ECR
+name: Build and private ECR push action
 on:
   push:
     branches:
@@ -74,7 +74,7 @@ jobs:
       contents: read
     steps:
       - name: Build and push to ECR
-        uses: citizensadvice/build-and-push-private-action@v1
+        uses: citizensadvice/build-and-private-ecr-push-action@v1
         with:
             dockerfile_context: '.'
             repository_name: <REPOSITORY NAME HERE>
