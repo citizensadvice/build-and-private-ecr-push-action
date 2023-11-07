@@ -14,7 +14,7 @@ inputs:
     required: false
     default: 'Dockerfile'
   build-args:
-    description: "List of build-time variables"
+    description: 'List of build-time variables'
     required: false
   repository_name:
     description: 'The name of the ECR repository. Will be used as the name of the Docker image'
@@ -34,6 +34,13 @@ inputs:
     description: 'Tag the image as a production image. Adds `latest tag` on push. Defaults to false'
     required: false
     default: 'false'
+  tags_override:
+    description: 'Override the default tags. This will replace ALL of the default tags'
+    required: false
+    default:
+      ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }}
+      ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }}
+      ${{ steps.latest-tag.outputs.tag }}
 
 outputs:
   image_id:
@@ -140,7 +147,4 @@ runs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: ${{ steps.multiarch.outputs.multiarch }}
-        tags: |
-          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }}
-          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }}
-          ${{ steps.latest-tag.outputs.tag }}
+        tags: ${{ inputs.tags_override }}
