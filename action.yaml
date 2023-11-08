@@ -37,10 +37,7 @@ inputs:
   tags_override:
     description: 'Override the default tags. This will replace ALL of the default tags'
     required: false
-    default:
-      ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }}
-      ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }}
-      ${{ steps.latest-tag.outputs.tag }}
+    default: ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}
 
 outputs:
   image_id:
