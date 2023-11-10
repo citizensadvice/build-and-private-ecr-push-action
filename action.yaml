@@ -37,7 +37,7 @@ inputs:
   tags_override:
     description: 'Override the default tags. This will replace ALL of the default tags'
     required: false
-    default: ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}
+    default: ''
 
 outputs:
   image_id:
@@ -112,6 +112,16 @@ runs:
           exit 1
         fi
 
+    - name: Configure tags
+      id: configure-tags
+      shell: bash
+      run: |
+        if [[ "${{ inputs.tags_override }}" == "" ]] ; then
+          echo  "tags=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}" >> $GITHUB_OUTPUT
+        else
+          echo "tags=${{ inputs.tags_override }}" >> $GITHUB_OUTPUT
+        fi
+
     - uses: actions/checkout@v3
       with:
         token: ${{ inputs.auth_token }}
@@ -144,4 +154,4 @@ runs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: ${{ steps.multiarch.outputs.multiarch }}
-        tags: ${{ inputs.tags_override }}
+        tags: ${{ steps.configure-tags.tags }}
