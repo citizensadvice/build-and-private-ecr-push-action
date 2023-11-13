@@ -154,4 +154,4 @@ runs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: ${{ steps.multiarch.outputs.multiarch }}
-        tags: ${{ steps.configure-tags.tags }}
+        tags: ${{ steps.configure-tags.outputs.tags }}
