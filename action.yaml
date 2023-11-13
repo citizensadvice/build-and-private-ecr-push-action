@@ -48,7 +48,7 @@ outputs:
     value: ${{ steps.build_and_push.digest }}
   image_tags:
     description: 'A CSV list of the image tags'
-    value: ${{ github.sha }},${{ steps.branch-name.outputs.name }},latest
+    value: ${{ steps.configure-tags.outputs.tags }}
 
 runs:
   using: 'composite'
