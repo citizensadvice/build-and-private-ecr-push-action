@@ -14,7 +14,7 @@ inputs:
     required: false
     default: 'Dockerfile'
   build-args:
-    description: "List of build-time variables"
+    description: 'List of build-time variables'
     required: false
   repository_name:
     description: 'The name of the ECR repository. Will be used as the name of the Docker image'
@@ -34,6 +34,10 @@ inputs:
     description: 'Tag the image as a production image. Adds `latest tag` on push. Defaults to false'
     required: false
     default: 'false'
+  tags_override:
+    description: 'Override the default tags. This will replace ALL of the default tags'
+    required: false
+    default: ''
 
 outputs:
   image_id:
@@ -44,7 +48,7 @@ outputs:
     value: ${{ steps.build_and_push.digest }}
   image_tags:
     description: 'A CSV list of the image tags'
-    value: ${{ github.sha }},${{ steps.branch-name.outputs.name }},latest
+    value: ${{ steps.configure-tags.outputs.tags }}
 
 runs:
   using: 'composite'
@@ -108,6 +112,16 @@ runs:
           exit 1
         fi
 
+    - name: Configure tags
+      id: configure-tags
+      shell: bash
+      run: |
+        if [[ "${{ inputs.tags_override }}" == "" ]] ; then
+          echo  "tags=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}" >> $GITHUB_OUTPUT
+        else
+          echo "tags=${{ inputs.tags_override }}" >> $GITHUB_OUTPUT
+        fi
+
     - uses: actions/checkout@v3
       with:
         token: ${{ inputs.auth_token }}
@@ -140,7 +154,4 @@ runs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: ${{ steps.multiarch.outputs.multiarch }}
-        tags: |
-          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }}
-          ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }}
-          ${{ steps.latest-tag.outputs.tag }}
+        tags: ${{ steps.configure-tags.outputs.tags }}
