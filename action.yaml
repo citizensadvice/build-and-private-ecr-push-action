@@ -130,19 +130,8 @@ runs:
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
 
-    - name: Check if image already exists
-      shell: bash
-      run: |
-        if [[ $(aws ecr describe-images --region eu-west-1 --repository-name ${{ inputs.repository_name }} --image-ids=imageTag=${{ github.sha }}) ]]
-        then
-          echo "IMAGE_EXISTS=true" >> $GITHUB_ENV
-        else
-          echo "IMAGE_EXISTS=false" >> $GITHUB_ENV
-        fi
-
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
-      if: env.IMAGE_EXISTS == 'false'
       id: build_and_push
       with:
         context: ${{ inputs.dockerfile_context }}
