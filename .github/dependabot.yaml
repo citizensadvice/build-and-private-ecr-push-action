@@ -13,3 +13,8 @@ updates:
       timezone: 'Europe/London'
     commit-message:
       prefix: '[dependabot:actions] '
+    groups:
+      regular-updates: # Group everything except major version updates and security vulnerabilities
+        update-types:
+          - "minor"
+          - "patch"
