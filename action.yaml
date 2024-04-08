@@ -126,7 +126,7 @@ runs:
       with:
         token: ${{ inputs.auth_token }}
     - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3.2.0
+    - uses: docker/setup-buildx-action@v3.3.0
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
 
