@@ -29,7 +29,7 @@ inputs:
   push_after_build:
     description: 'Push the image after building it. Useful if you need to run tests on the image before you push it. Defaults to `true`'
     required: false
-    default: true
+    default: 'true'
   prod_image:
     description: 'Tag the image as a production image. Adds `latest tag` on push. Defaults to false'
     required: false
@@ -126,7 +126,7 @@ runs:
       with:
         token: ${{ inputs.auth_token }}
     - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3.3.0
+    - uses: docker/setup-buildx-action@v3.0.0
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
 
@@ -139,8 +139,8 @@ runs:
         push: ${{ inputs.push_after_build }}
         build-args: ${{ inputs.build-args }}
         load: false
-        # Cache is experimental, see https://github.com/moby/buildkit#github-actions-cache-experimental
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        # If RUNS_ON_S3_BUCKET_CACHE is not set use GHA cache, else use runs-on cache
+        cache-from: ${{ env.RUNS_ON_S3_BUCKET_CACHE == '' && 'type=gha' || 'type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }}' }} 
+        cache-to: ${{ env.RUNS_ON_S3_BUCKET_CACHE == '' && type=gha,mode=max || 'type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }},mode=max'}
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: ${{ steps.configure-tags.outputs.tags }}
