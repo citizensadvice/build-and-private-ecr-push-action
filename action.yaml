@@ -66,19 +66,6 @@ runs:
           exit 1
         fi
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ inputs.role_arn }}
-        role-session-name: ${{ inputs.repository_name }}-actions-workflow
-        aws-region: eu-west-1
-
-    - name: ECR login
-      id: ecr-login
-      uses: aws-actions/amazon-ecr-login@v2
-      with:
-        registry-type: private
-
     - name: Get branch name
       id: branch-name
       shell: bash
@@ -145,17 +132,41 @@ runs:
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
 
-
-    - name: Build and push Docker image
+    - name: Build Docker image
       uses: docker/build-push-action@v5
-      id: build_and_push
+      id: build
+      with:
+        context: ${{ inputs.dockerfile_context }}
+        file: ${{ inputs.dockerfile }}
+        push: false
+        build-args: ${{ inputs.build-args }}
+        load: true
+        cache-from: ${{ steps.cache-config.outputs.cache-from }}
+        cache-to: ${{ steps.cache-config.outputs.cache-to }}
+        platforms: ${{ steps.multiarch.outputs.multiarch }}
+        tags: ${{ steps.configure-tags.outputs.tags }}
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.role_arn }}
+        role-session-name: ${{ inputs.repository_name }}-actions-workflow
+        aws-region: eu-west-1
+
+    - name: ECR login
+      id: ecr-login
+      uses: aws-actions/amazon-ecr-login@v2
+      with:
+        registry-type: private
+
+    - name: Push Docker image
+      uses: docker/build-push-action@v5
+      id: push
       with:
         context: ${{ inputs.dockerfile_context }}
         file: ${{ inputs.dockerfile }}
         push: ${{ inputs.push_after_build }}
         build-args: ${{ inputs.build-args }}
         load: false
-        cache-from: ${{ steps.cache-config.outputs.cache-from }}
-        cache-to: ${{ steps.cache-config.outputs.cache-to }}
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: ${{ steps.configure-tags.outputs.tags }}
