@@ -133,7 +133,7 @@ runs:
         else
           echo "type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }}" >> $GITHUB_OUTPUT
           echo "type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }},mode=max" >> $GITHUB_OUTPUT
-
+        fi
     - uses: actions/checkout@v4
       with:
         token: ${{ inputs.auth_token }}
