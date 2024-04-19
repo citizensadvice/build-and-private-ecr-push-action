@@ -140,7 +140,7 @@ runs:
         build-args: ${{ inputs.build-args }}
         load: false
         # If RUNS_ON_S3_BUCKET_CACHE is not set use GHA cache, else use runs-on cache
-        cache-from: ${{ env.RUNS_ON_S3_BUCKET_CACHE == '' && 'type=gha' || format('type=s3,blobs_prefix=cache/{1}/,manifests_prefix=cache/{2}/,region={3},bucket={4}',github.repository,github.repository,env.RUNS_ON_AWS_REGION,env.RUNS_ON_S3_BUCKET_CACHE) }} 
-        cache-to: ${{ env.RUNS_ON_S3_BUCKET_CACHE == '' && 'type=gha,mode=max' || format('type=s3,blobs_prefix=cache/{1}/,manifests_prefix=cache/{2}/,region={3},bucket={4},mode=max',github.repository,github.repository,env.RUNS_ON_AWS_REGION,env.RUNS_ON_S3_BUCKET_CACHE) }}
+        cache-from: ${{ env.RUNS_ON_S3_BUCKET_CACHE == '' && 'type=gha' || format('type=s3,blobs_prefix=cache/{1}/,manifests_prefix=cache/{2}/,region={3},bucket={4}','github.repository','github.repository','env.RUNS_ON_AWS_REGION','env.RUNS_ON_S3_BUCKET_CACHE') }} 
+        cache-to: ${{ env.RUNS_ON_S3_BUCKET_CACHE == '' && 'type=gha,mode=max' || format('type=s3,blobs_prefix=cache/{1}/,manifests_prefix=cache/{2}/,region={3},bucket={4},mode=max','github.repository','github.repository','env.RUNS_ON_AWS_REGION','env.RUNS_ON_S3_BUCKET_CACHE') }}
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: ${{ steps.configure-tags.outputs.tags }}
