@@ -66,6 +66,30 @@ runs:
           exit 1
         fi
 
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.auth_token }}
+    
+    - uses: docker/setup-qemu-action@v3
+    
+    - uses: docker/setup-buildx-action@v3.0.0
+      with:
+        platforms: ${{ steps.multiarch.outputs.multiarch }}
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      id: build
+      with:
+        context: ${{ inputs.dockerfile_context }}
+        file: ${{ inputs.dockerfile }}
+        push: false
+        build-args: ${{ inputs.build-args }}
+        load: true
+        cache-from: ${{ steps.cache-config.outputs.cache-from }}
+        cache-to: ${{ steps.cache-config.outputs.cache-to }}
+        platforms: ${{ steps.multiarch.outputs.multiarch }}
+        tags: prebuild
+
     - name: Get branch name
       id: branch-name
       shell: bash
@@ -122,29 +146,6 @@ runs:
           echo "cache-to=type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }},mode=max" >> $GITHUB_OUTPUT
         fi
     
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ inputs.auth_token }}
-    
-    - uses: docker/setup-qemu-action@v3
-    
-    - uses: docker/setup-buildx-action@v3.0.0
-      with:
-        platforms: ${{ steps.multiarch.outputs.multiarch }}
-
-    - name: Build Docker image
-      uses: docker/build-push-action@v5
-      id: build
-      with:
-        context: ${{ inputs.dockerfile_context }}
-        file: ${{ inputs.dockerfile }}
-        push: false
-        build-args: ${{ inputs.build-args }}
-        load: true
-        cache-from: ${{ steps.cache-config.outputs.cache-from }}
-        cache-to: ${{ steps.cache-config.outputs.cache-to }}
-        platforms: ${{ steps.multiarch.outputs.multiarch }}
-        tags: ${{ steps.configure-tags.outputs.tags }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
