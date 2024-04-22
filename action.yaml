@@ -53,6 +53,17 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - uses: crazy-max/ghaction-setup-docker@v2
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+      with:
+        daemon-config: |
+          {
+            "features": {
+              "containerd-snapshotter": true
+            }
+          }
+
     - name: Configure Multi-arch Build
       id: multiarch
       shell: bash
