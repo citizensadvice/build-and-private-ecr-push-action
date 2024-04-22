@@ -53,16 +53,16 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: crazy-max/ghaction-setup-docker@v2
-      env:
-        DOCKER_CLI_EXPERIMENTAL: enabled
-      with:
-        daemon-config: |
-          {
-            "features": {
-              "containerd-snapshotter": true
-            }
-          }
+    # - uses: crazy-max/ghaction-setup-docker@v2
+    #   env:
+    #     DOCKER_CLI_EXPERIMENTAL: enabled
+    #   with:
+    #     daemon-config: |
+    #       {
+    #         "features": {
+    #           "containerd-snapshotter": true
+    #         }
+    #       }
 
     - name: Configure Multi-arch Build
       id: multiarch
@@ -108,9 +108,8 @@ runs:
       with:
         context: ${{ inputs.dockerfile_context }}
         file: ${{ inputs.dockerfile }}
-        push: false
+        push: true
         build-args: ${{ inputs.build-args }}
-        load: true
         cache-from: ${{ steps.cache-config.outputs.cache-from }}
         cache-to: ${{ steps.cache-config.outputs.cache-to }}
         platforms: ${{ steps.multiarch.outputs.multiarch }}
@@ -185,6 +184,5 @@ runs:
         file: ${{ inputs.dockerfile }}
         push: ${{ inputs.push_after_build }}
         build-args: ${{ inputs.build-args }}
-        load: false
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: ${{ steps.configure-tags.outputs.tags }}
