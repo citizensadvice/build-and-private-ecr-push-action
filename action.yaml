@@ -97,7 +97,7 @@ runs:
         file: ${{ inputs.dockerfile }}
         push: false
         build-args: ${{ inputs.build-args }}
-        load: false
+        load: true
         cache-from: ${{ steps.cache-config.outputs.cache-from }}
         cache-to: ${{ steps.cache-config.outputs.cache-to }}
         platforms: ${{ steps.multiarch.outputs.multiarch }}
