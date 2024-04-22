@@ -108,7 +108,7 @@ runs:
       with:
         context: ${{ inputs.dockerfile_context }}
         file: ${{ inputs.dockerfile }}
-        push: true
+        push: false
         build-args: ${{ inputs.build-args }}
         cache-from: ${{ steps.cache-config.outputs.cache-from }}
         cache-to: ${{ steps.cache-config.outputs.cache-to }}
