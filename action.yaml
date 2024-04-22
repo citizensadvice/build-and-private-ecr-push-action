@@ -76,6 +76,19 @@ runs:
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
 
+    # If RUNS_ON_S3_BUCKET_CACHE is not set use GHA cache, else use runs-on cache
+    - name: Generate cache config
+      id: cache-config
+      shell: bash
+      run: |
+        if [[ -z "${{ env.RUNS_ON_S3_BUCKET_CACHE }}" ]] ; then
+          echo "cache-from=type=gha" >> $GITHUB_OUTPUT
+          echo "cache-to=type=gha,mode=max" >> $GITHUB_OUTPUT
+        else
+          echo "cache-from=type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }}" >> $GITHUB_OUTPUT
+          echo "cache-to=type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }},mode=max" >> $GITHUB_OUTPUT
+        fi
+
     - name: Build Docker image
       uses: docker/build-push-action@v5
       id: build
@@ -132,20 +145,6 @@ runs:
         else
           echo "tags=${{ inputs.tags_override }}" >> $GITHUB_OUTPUT
         fi
-
-    # If RUNS_ON_S3_BUCKET_CACHE is not set use GHA cache, else use runs-on cache
-    - name: Generate cache config
-      id: cache-config
-      shell: bash
-      run: |
-        if [[ -z "${{ env.RUNS_ON_S3_BUCKET_CACHE }}" ]] ; then
-          echo "cache-from=type=gha" >> $GITHUB_OUTPUT
-          echo "cache-to=type=gha,mode=max" >> $GITHUB_OUTPUT
-        else
-          echo "cache-from=type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }}" >> $GITHUB_OUTPUT
-          echo "cache-to=type=s3,blobs_prefix=cache/${{ github.repository }}/,manifests_prefix=cache/${{ github.repository }}/,region=${{ env.RUNS_ON_AWS_REGION }},bucket=${{ env.RUNS_ON_S3_BUCKET_CACHE }},mode=max" >> $GITHUB_OUTPUT
-        fi
-    
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
