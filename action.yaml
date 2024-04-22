@@ -103,10 +103,24 @@ runs:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: prebuild
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.role_arn }}
+        role-session-name: ${{ inputs.repository_name }}-actions-workflow
+        aws-region: eu-west-1
+
+    - name: ECR login
+      id: ecr-login
+      uses: aws-actions/amazon-ecr-login@v2
+      with:
+        registry-type: private
+
     - name: Get branch name
       id: branch-name
       shell: bash
       run: |
+        # Get branch name
         branch=${{ github.head_ref || github.ref_name }}
         echo "name=${branch//\//-}" >> $GITHUB_OUTPUT
 
@@ -114,6 +128,7 @@ runs:
       id: latest-tag
       shell: bash
       run: |
+        # Configure latest tag
         if [[ "${{ inputs.prod_image }}" == "true" ]] ; then
           echo "tag=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest" >> $GITHUB_OUTPUT
         elif [[ "${{ inputs.prod_image }}" == "false" ]] ; then
@@ -127,6 +142,7 @@ runs:
       id: dev-tag
       shell: bash
       run: |
+        # Configure dev tag
         if [[ "${{ inputs.prod_image }}" == "false" ]] ; then
           echo "tag=dev_" >> $GITHUB_OUTPUT
         elif [[ "${{ inputs.prod_image }}" == "true" ]] ; then
@@ -140,24 +156,13 @@ runs:
       id: configure-tags
       shell: bash
       run: |
+        # Configure tags
         if [[ "${{ inputs.tags_override }}" == "" ]] ; then
           echo  "tags=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}" >> $GITHUB_OUTPUT
         else
           echo "tags=${{ inputs.tags_override }}" >> $GITHUB_OUTPUT
         fi
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ inputs.role_arn }}
-        role-session-name: ${{ inputs.repository_name }}-actions-workflow
-        aws-region: eu-west-1
-
-    - name: ECR login
-      id: ecr-login
-      uses: aws-actions/amazon-ecr-login@v2
-      with:
-        registry-type: private
 
     - name: Push Docker image
       uses: docker/build-push-action@v5
