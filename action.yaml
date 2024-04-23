@@ -57,6 +57,7 @@ runs:
       with:
         daemon-config: |
           {
+            "debug" : false,
             "features": {
               "containerd-snapshotter": true
             }
