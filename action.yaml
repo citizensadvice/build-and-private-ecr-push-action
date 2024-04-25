@@ -53,7 +53,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: crazy-max/ghaction-setup-docker@v2
+    - uses: crazy-max/ghaction-setup-docker@v3
       with:
         daemon-config: |
           {
