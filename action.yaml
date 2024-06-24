@@ -102,7 +102,7 @@ runs:
         fi
 
     - name: Build Docker image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       id: build
       with:
         context: ${{ inputs.dockerfile_context }}
@@ -177,7 +177,7 @@ runs:
 
 
     - name: Push Docker image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       id: push
       with:
         context: ${{ inputs.dockerfile_context }}
