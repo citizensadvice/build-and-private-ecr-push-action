@@ -23,7 +23,7 @@ This action will automatically cache Docker image layers to the Github cache, ho
 
 ## Authentication
 
-In order to give a repository the AWS permissions required to run this action, the Github repository name and the ECR repository ARN **must** be added to the `PrivateECRPush` configuration in the [AWS OIDC CDK](https://github.com/citizensadvice/aws-oidc-cdk) repository and then deployed. Please send a message to `#devops-support` in Slack for help with this.
+In order to give a repository the AWS permissions required to run this action, the Github repository name and the ECR repository ARN should be added to the `PrivateECRPush` configuration in the [AWS OIDC CDK](https://github.com/citizensadvice/aws-oidc-cdk) repository and then deployed **or** the `role_arn` input should be included with a role that has ECR Push and any other required permissions. Please send a message to `#devops-support` in Slack for help with this.
 
 ## Inputs
 
