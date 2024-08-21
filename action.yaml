@@ -119,7 +119,15 @@ runs:
         if [[ "${{ inputs.tags_override }}" == "" ]] ; then
           echo  "tags=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}" >> $GITHUB_OUTPUT
         else
-          echo "tags=${{ inputs.tags_override }}" >> $GITHUB_OUTPUT
+          tags_override="${{ inputs.tags_override }}"
+          IFS=$','; split=($tags_override); unset IFS;
+
+          full_tags=""
+          for tag in "${split[@]}"
+          do
+            full_tags+="${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:$tag,"
+          done
+          echo "tags=$full_tags" >> $GITHUB_OUTPUT
         fi
 
     - uses: actions/checkout@v4
