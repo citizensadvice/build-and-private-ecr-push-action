@@ -58,9 +58,9 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.multiarch_build }}" == "enabled" ]] ; then
-          echo "multiarch=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
+          echo "multiarch=linux/amd64,linux/arm64" | tee -a $GITHUB_OUTPUT
         elif [[ "${{ inputs.multiarch_build }}" == "disabled" ]] ; then
-          echo "multiarch=linux/amd64" >> $GITHUB_OUTPUT
+          echo "multiarch=linux/amd64" | tee -a $GITHUB_OUTPUT
         else
           echo "Input `multiarch_build` not set correctly. Options are 'enabled' or 'disabled'"
           exit 1
@@ -84,16 +84,16 @@ runs:
       shell: bash
       run: |
         branch=${{ github.head_ref || github.ref_name }}
-        echo "name=${branch//\//-}" >> $GITHUB_OUTPUT
+        echo "name=${branch//\//-}" | tee -a $GITHUB_OUTPUT
 
     - name: Configure latest tag
       id: latest-tag
       shell: bash
       run: |
         if [[ "${{ inputs.prod_image }}" == "true" ]] ; then
-          echo "tag=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest" >> $GITHUB_OUTPUT
+          echo "tag=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:latest" | tee -a $GITHUB_OUTPUT
         elif [[ "${{ inputs.prod_image }}" == "false" ]] ; then
-          echo "tag=" >> $GITHUB_OUTPUT
+          echo "tag=" | tee -a $GITHUB_OUTPUT
         else
           echo "Input `prod_image` not set correctly. Options are 'true' or 'false'"
           exit 1
@@ -104,9 +104,9 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.prod_image }}" == "false" ]] ; then
-          echo "tag=dev_" >> $GITHUB_OUTPUT
+          echo "tag=dev_" | tee -a $GITHUB_OUTPUT
         elif [[ "${{ inputs.prod_image }}" == "true" ]] ; then
-          echo "tag=" >> $GITHUB_OUTPUT
+          echo "tag=" | tee -a $GITHUB_OUTPUT
         else
           echo "Input `dev_tag` not set correctly. Options are 'true' or 'false'"
           exit 1
@@ -117,9 +117,9 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.tags_override }}" == "" ]] ; then
-          echo  "tags=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}" >> $GITHUB_OUTPUT
+          echo  "tags=${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.dev-tag.outputs.tag }}${{ github.sha }},${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:${{ steps.branch-name.outputs.name }},${{ steps.latest-tag.outputs.tag }}" | tee -a $GITHUB_OUTPUT
         else
-          echo "tags=${{ inputs.tags_override }}" >> $GITHUB_OUTPUT
+          python -c 'print("tags=" + ",".join(f"${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:{tag}" for tag in "${{ inputs.tags_override }}".split(",")))' | tee -a $GITHUB_OUTPUT
         fi
 
     - uses: actions/checkout@v4

@@ -38,7 +38,7 @@ In order to give a repository the AWS permissions required to run this action, t
 | `dockerfile`         | The name of the dockerfile to be built.                                                                                                                             | No       | `Dockerfile`                                    |
 | `build-args`         | List of build-time variables.                                                                                                                                       | No       |                                                 |
 | `prod_image`         | Mark the image as a production image. Adds `latest` tag. When false, adds `dev_` to hash tag.                                                                       | No       | false                                           |
-| `tags_override`      | Override the default tags. This will replace ALL of the default tags                                                                                                | No       | See default tags above                          |
+| `tags_override`      | Override the default tags. This will replace ALL of the default tags. Must be a comma separated list with no spaces                                                 | No       | See default tags above                          |
 
 The user associated with the `aws_access_key` must have permission to push, update and read the private repository in question.
 
