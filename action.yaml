@@ -142,5 +142,5 @@ runs:
         # Cache is experimental, see https://github.com/moby/buildkit#github-actions-cache-experimental
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        platforms: ${{ steps.multiarch.outputs.multiarch }}
+        # platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: ${{ steps.configure-tags.outputs.tags }}
