@@ -58,9 +58,9 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.multiarch_build }}" == "enabled" ]] ; then
-          echo "multiarch=linux/amd64,linux/arm64" | tee -a $GITHUB_OUTPUT
+          echo "multiarch=local,linux/arm64" | tee -a $GITHUB_OUTPUT
         elif [[ "${{ inputs.multiarch_build }}" == "disabled" ]] ; then
-          echo "multiarch=linux/amd64" | tee -a $GITHUB_OUTPUT
+          echo "multiarch=local" | tee -a $GITHUB_OUTPUT
         else
           echo "Input `multiarch_build` not set correctly. Options are 'enabled' or 'disabled'"
           exit 1
@@ -142,5 +142,5 @@ runs:
         # Cache is experimental, see https://github.com/moby/buildkit#github-actions-cache-experimental
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        platforms: ${{ steps.multiarch.outputs.multiarch }}
+        # platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: ${{ steps.configure-tags.outputs.tags }}
