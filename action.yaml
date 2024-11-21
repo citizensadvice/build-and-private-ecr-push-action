@@ -133,7 +133,7 @@ runs:
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         driver-opts: |
-          image=979633842206.dkr.ecr.eu-west-1.amazonaws.com/docker-hub/library/moby/buildkit:master
+          image=979633842206.dkr.ecr.eu-west-1.amazonaws.com/docker-hub/moby/buildkit:master
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
