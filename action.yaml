@@ -53,6 +53,8 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - uses: runs-on/action@v1
+    
     - name: Configure Multi-arch Build
       id: multiarch
       shell: bash
@@ -122,10 +124,6 @@ runs:
           python -c 'print("tags=" + ",".join(f"${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:{tag}" for tag in "${{ inputs.tags_override }}".split(",")))' | tee -a $GITHUB_OUTPUT
         fi
 
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ inputs.auth_token }}
-
     - uses: docker/setup-qemu-action@v3
       if: ${{ inputs.multiarch_build == 'enabled' }}
 
@@ -144,8 +142,5 @@ runs:
         push: ${{ inputs.push_after_build }}
         build-args: ${{ inputs.build-args }}
         load: false
-        # Cache is experimental, see https://github.com/moby/buildkit#github-actions-cache-experimental
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        # platforms: ${{ steps.multiarch.outputs.multiarch }}
+        platforms: ${{ steps.multiarch.outputs.multiarch }}
         tags: ${{ steps.configure-tags.outputs.tags }}
