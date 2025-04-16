@@ -70,13 +70,13 @@ on:
 jobs:
   build:
     name: Publish image
-    runs-on: ubuntu-22.04
+    runs-on: runs-on
     permissions:
       id-token: write
       contents: read
     steps:
       - name: Build and push to ECR
-        uses: citizensadvice/build-and-private-ecr-push-action@v1
+        uses: citizensadvice/build-and-private-ecr-push-action@v3
         with:
             dockerfile_context: '.'
             repository_name: <REPOSITORY NAME HERE>
