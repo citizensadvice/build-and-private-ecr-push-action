@@ -4,15 +4,11 @@ version: 2
 updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
-    reviewers:
-      - 'citizensadvice/devops'
     schedule:
       interval: 'weekly'
       day: 'monday'
       time: '09:00'
       timezone: 'Europe/London'
-    commit-message:
-      prefix: '[dependabot:actions] '
     groups:
       regular-updates: # Group everything except major version updates and security vulnerabilities
         update-types:
