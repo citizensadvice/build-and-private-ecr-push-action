@@ -53,7 +53,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: runs-on/action@v2
+    - uses: runs-on/action@742bf56072eb4845a0f94b3394673e4903c90ff0
     
     - name: Configure Multi-arch Build
       id: multiarch
@@ -69,7 +69,7 @@ runs:
         fi
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v6
+      uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37
       with:
         role-to-assume: ${{ inputs.role_arn }}
         role-session-name: ${{ inputs.repository_name }}-actions-workflow
@@ -77,7 +77,7 @@ runs:
 
     - name: ECR login
       id: ecr-login
-      uses: aws-actions/amazon-ecr-login@v2
+      uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78
       with:
         registry-type: private
 
@@ -124,17 +124,17 @@ runs:
           python -c 'print("tags=" + ",".join(f"${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:{tag}" for tag in "${{ inputs.tags_override }}".split(",")))' | tee -a $GITHUB_OUTPUT
         fi
 
-    - uses: docker/setup-qemu-action@v4
+    - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a
       if: ${{ inputs.multiarch_build == 'enabled' }}
 
-    - uses: docker/setup-buildx-action@v4.0.0
+    - uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         driver-opts: |
           image=979633842206.dkr.ecr.eu-west-1.amazonaws.com/docker-hub/moby/buildkit:master
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@v7
+      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294
       id: build_and_push
       with:
         context: ${{ inputs.dockerfile_context }}
