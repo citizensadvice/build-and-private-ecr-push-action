@@ -53,7 +53,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: runs-on/action@742bf56072eb4845a0f94b3394673e4903c90ff0
+    - uses: runs-on/action@d141ef83eb66d096ce8afc767e09115a65c63b60
     
     - name: Configure Multi-arch Build
       id: multiarch
@@ -69,7 +69,7 @@ runs:
         fi
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37
+      uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885
       with:
         role-to-assume: ${{ inputs.role_arn }}
         role-session-name: ${{ inputs.repository_name }}-actions-workflow
@@ -77,7 +77,7 @@ runs:
 
     - name: ECR login
       id: ecr-login
-      uses: aws-actions/amazon-ecr-login@19d944daaa35f0fa1d3f7f8af1d3f2e5de25c5b7
+      uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419
       with:
         registry-type: private
 
