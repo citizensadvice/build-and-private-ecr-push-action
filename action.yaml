@@ -53,7 +53,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: runs-on/action@d141ef83eb66d096ce8afc767e09115a65c63b60
+    - uses: runs-on/action@4e5f72399b6b17f2e79c511c1b38a315a64d22dc
     
     - name: Configure Multi-arch Build
       id: multiarch
@@ -124,17 +124,17 @@ runs:
           python -c 'print("tags=" + ",".join(f"${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository_name }}:{tag}" for tag in "${{ inputs.tags_override }}".split(",")))' | tee -a $GITHUB_OUTPUT
         fi
 
-    - uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3
+    - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8
       if: ${{ inputs.multiarch_build == 'enabled' }}
 
-    - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+    - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         driver-opts: |
           image=979633842206.dkr.ecr.eu-west-1.amazonaws.com/docker-hub/moby/buildkit:master
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
+      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
       id: build_and_push
       with:
         context: ${{ inputs.dockerfile_context }}
