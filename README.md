@@ -54,6 +54,9 @@ Due to the fact that the action will be running in an `amd64` environment (Also 
 
 ## Example usage
 
+> [!NOTE]
+> In versions prior to v3 ran `actions/checkout` as part of the workflow. In recent versions you need to add this explicitly.
+
 Located in `.github/workflows/build-and-push.yml`:
 
 ```yaml
@@ -75,13 +78,14 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - uses: actions/checkout@v7
       - name: Build and push to ECR
-        uses: citizensadvice/build-and-private-ecr-push-action@v3
+        uses: citizensadvice/build-and-private-ecr-push-action@v6
         with:
-            dockerfile_context: '.'
-            repository_name: <REPOSITORY NAME HERE>
-            auth_token: ${{ secrets.GITHUB_TOKEN }}
-            prod_image: true
+          dockerfile_context: "."
+          repository_name: <REPOSITORY NAME HERE>
+          auth_token: ${{ secrets.GITHUB_TOKEN }}
+          prod_image: true
 ```
 
 The `on` conditions and branch matching can be changes to whatever suites your team best. If you require assistance implementing a custom solution, please send a message to `#devops-support` in Slack.
