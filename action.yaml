@@ -77,7 +77,7 @@ runs:
 
     - name: ECR login
       id: ecr-login
-      uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64
+      uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
       with:
         registry-type: private
 
@@ -127,7 +127,7 @@ runs:
     - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8
       if: ${{ inputs.multiarch_build == 'enabled' }}
 
-    - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
+    - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
       with:
         platforms: ${{ steps.multiarch.outputs.multiarch }}
         driver-opts: |
