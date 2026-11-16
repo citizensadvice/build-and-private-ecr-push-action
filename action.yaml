@@ -53,7 +53,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: runs-on/action@13fbb6a39310a0dac9ab4716da2c4e74a3326dfc
+    - uses: runs-on/action@4a3bfc79f21a9b97e972e2ba75a2b0b1e9688670
     
     - name: Configure Multi-arch Build
       id: multiarch
